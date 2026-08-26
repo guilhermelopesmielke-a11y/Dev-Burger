@@ -1,0 +1,27 @@
+# Projeto de terceiros (seed do curso) - fora deste repositorio
+seed-devburger-api/
+
+# Backups do historico git antigo das subpastas (ficam so na maquina local)
+.git-old/
+**/.git-old/
+
+# Dependencias - reinstalaveis com `pnpm install`
+node_modules/
+**/node_modules/
+
+# Build gerado
+dist/
+dist-ssr/
+**/dist/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini
