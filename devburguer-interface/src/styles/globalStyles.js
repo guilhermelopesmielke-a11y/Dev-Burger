@@ -1,9 +1,9 @@
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from 'styled-components';
 import 'react-toastify/dist/ReactToastify.css';
 
 const globalStyle = createGlobalStyle`
     *{
-        font-family: "Poppins", sans-serif;
+        font-family: ${({ theme }) => theme.poppinsFont};
         font-weight: 400;
         font-style: normal;
         margin: 0;
@@ -15,6 +15,6 @@ const globalStyle = createGlobalStyle`
     button, a{
         cursor: pointer;
     }
-`
+`;
 
 export default globalStyle;

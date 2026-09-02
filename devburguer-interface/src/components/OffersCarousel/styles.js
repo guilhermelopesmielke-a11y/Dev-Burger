@@ -1,11 +1,10 @@
-import styled from "styled-components";
-
+import styled from 'styled-components';
 
 export const Container = styled.div`
     .carousel-item {
         padding-right: 40px;
     }
-    
+
     overflow-x: hidden;
 
     .react-multi-carousel-list{
@@ -14,19 +13,19 @@ export const Container = styled.div`
 
     padding-left: 40px;
     padding-bottom: 40px;
-`
+`;
 
 export const Feedback = styled.p`
     text-align: center;
     padding: 40px 20px;
     font-size: 18px;
     font-weight: 600;
-    color: ${props => (props.$error ? "#cf3057" : "#5c5c5c")};
-`
+    color: ${({ $error, theme }) => ($error ? theme.darkRed : theme.darkGray)};
+`;
 
 export const Title = styled.h2`
     font-size: 32px;
-    color: #61a120;
+    color: ${({ theme }) => theme.gren};
     font-weight: 800;
     padding-bottom: 12px;
     position: relative;
@@ -41,6 +40,6 @@ export const Title = styled.h2`
         transform: translateX(-50%);
         width: 56px;
         height: 4px;
-        background: #61a120;
+        background: ${({ theme }) => theme.gren};
     }
-`
+`;

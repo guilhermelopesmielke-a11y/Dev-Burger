@@ -1,12 +1,12 @@
-import styled, { keyframes } from "styled-components";
-import BannerHamburger from "../../assets/BannerHamburger.svg";
+import styled, { keyframes } from 'styled-components';
+import BannerHamburger from '../../assets/BannerHamburger.svg';
 import background from '../../assets/background.svg';
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 export const Container = styled.div`
     width: 100%;
     min-height: 100vh;
-    background-color: #f0f0f0;
+    background-color: ${({ theme }) => theme.secondWhite};
 
     background-image: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url(${background});
 
@@ -23,21 +23,21 @@ export const Banner = styled.div`
     background: url(${BannerHamburger}) no-repeat;
     background-size: cover;
     background-position: center;
-    background-color: #1f1f1f;
+    background-color: ${({ theme }) => theme.mainBlack};
 
     h1{
-        font-family: 'Road Rage', sans-serif;
+        font-family: ${({ theme }) => theme.roadRageFont};
         font-size: 80px;
         line-height: 60px;
         position: absolute;
-        color: #fff;
+        color: ${({ theme }) => theme.white};
         text-align: center;
         right: 20%;
         top: 30%;
 
         span{
             display: block;
-            color: #fff;
+            color: ${({ theme }) => theme.white};
             font-size: 20px;
         }
     }
@@ -67,13 +67,15 @@ export const CategoryButton = styled(Link)`
     font-size: 20px;
     cursor: pointer;
     background: none;
-    color: ${ props => props.$isActiveCategory ? `#9758a6`: `#696969`};
+    color: ${({ $isActiveCategory, theme }) =>
+      $isActiveCategory ? theme.purple : theme.darkGray};
     font-weight: 500;
     padding-bottom: 5px;
     border: none;
-    border-bottom: ${ props => props.$isActiveCategory && `3px solid #9758a6`};
+    border-bottom: ${({ $isActiveCategory, theme }) =>
+      $isActiveCategory && `3px solid ${theme.purple}`};
     line-height: 20px;
-`
+`;
 
 const slideIn = keyframes`
     from{
@@ -84,7 +86,7 @@ const slideIn = keyframes`
         opacity: 1;
         transform: translateX(0);
     }
-`
+`;
 
 export const BackButton = styled(Link)`
     /* fora do fluxo do flex: cola na esquerda sem empurrar as categorias */
@@ -99,32 +101,32 @@ export const BackButton = styled(Link)`
     text-decoration: none;
     font-size: 20px;
     cursor: pointer;
-    color: #fff;
-    background-color: #9758a6;
+    color: ${({ theme }) => theme.white};
+    background-color: ${({ theme }) => theme.purple};
     font-weight: 600;
     line-height: 20px;
 
     padding: 12px 24px;
     border: 2px solid transparent;
     border-radius: 30px;
-    box-shadow: 0px 4px 12px rgba(151, 88, 166, 0.35);
+    box-shadow: 0px 4px 12px ${({ theme }) => theme.purple}59;
 
     animation: ${slideIn} 0.5s ease-out;
     transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 
     &:hover{
-        border-color: #fff;
+        border-color: ${({ theme }) => theme.white};
         transform: translateY(-3px);
-        box-shadow: 0px 8px 18px rgba(151, 88, 166, 0.5);
+        box-shadow: 0px 8px 18px ${({ theme }) => theme.purple}80;
     }
 
     &:active{
         transform: translateY(-1px) scale(0.97);
-        box-shadow: 0px 3px 8px rgba(151, 88, 166, 0.4);
+        box-shadow: 0px 3px 8px ${({ theme }) => theme.purple}66;
     }
 
     &:focus-visible{
-        outline: 3px solid #ff8c05;
+        outline: 3px solid ${({ theme }) => theme.orange};
         outline-offset: 3px;
     }
-`
+`;

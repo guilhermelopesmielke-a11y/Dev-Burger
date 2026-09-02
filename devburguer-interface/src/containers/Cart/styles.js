@@ -1,16 +1,16 @@
-import styled from "styled-components";
-import Texture from "../../assets/Texture.svg"
-import Background from "../../assets/background.svg"
+import styled from 'styled-components';
+import Texture from '../../assets/Texture.svg';
+import Background from '../../assets/background.svg';
 
 export const Container = styled.div`
     width: 100%;
     background-image: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url(${Background});
     min-height: 100vh;
-`
+`;
 
 export const Banner = styled.div`
     background: url('${Texture}');
-    background-color: #1f1f1f;
+    background-color: ${({ theme }) => theme.mainBlack};
     background-size: cover;
     background-position: center;
     display: flex;
@@ -22,13 +22,13 @@ export const Banner = styled.div`
     img{
         height: 130px;
     }
-`
+`;
 
 export const Title = styled.div`
     font-size: 32px;
     font-weight: 800;
     padding-bottom: 12px;
-    color: #61a120;
+    color: ${({ theme }) => theme.gren};
     text-align: center;
     position: relative;
 
@@ -39,9 +39,9 @@ export const Title = styled.div`
         content: '';
         width: 56px;
         height: 4px;
-        background-color: #61a120;
+        background-color: ${({ theme }) => theme.gren};
     }
-`
+`;
 
 export const Content = styled.div`
     display: grid;
@@ -51,4 +51,4 @@ export const Content = styled.div`
     max-width: 1280px;
     padding: 40px;
     margin: 0 auto;
-`
+`;

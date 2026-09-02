@@ -1,16 +1,16 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const Container = styled.div`
     height: 50px;
-    background-color: #5c2669;
+    background-color: ${({ theme }) => theme.darkPurple};
     width: 100vw;
     display: flex;
     align-items: center;
     justify-content: center;
 
     p{
-        color: #fff;
+        color: ${({ theme }) => theme.white};
         font-size: 14px;
         font-weight: lighter;
     }
-`
+`;

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const Container = styled.div`
     display: flex;
@@ -7,7 +7,7 @@ export const Container = styled.div`
     gap: 20px;
     padding: 20px;
     border-radius: 10px;
-    background-color: #fff;
+    background-color: ${({ theme }) => theme.white};
     cursor:grab;
     box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.35);
     position: relative;
@@ -22,7 +22,7 @@ export const Container = styled.div`
 
         p{
             font-size: 18px;
-            color: #ff8c05;
+            color: ${({ theme }) => theme.orange};
             line-height: 20px;
             font-weight: 700;
             margin-top: 40px;
@@ -30,16 +30,16 @@ export const Container = styled.div`
 
         strong{
             font-size: 22px;
-            color: #363636;
+            color: ${({ theme }) => theme.black};
             font-weight: 800;
             line-height: 20px;
         }
     }
-`
+`;
 
 export const CardImage = styled.img`
     height: 100px;
     position: absolute;
     top: -50px;
 
-`
+`;

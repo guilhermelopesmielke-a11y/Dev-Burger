@@ -1,13 +1,13 @@
-import styled from "styled-components";
-import BackgroundLogin from "../../assets/background-login.jpg";
-import Background from "../../assets/background.svg";
-import { Link as ReactLink } from "react-router-dom";
+import styled from 'styled-components';
+import BackgroundLogin from '../../assets/background-login.jpg';
+import Background from '../../assets/background.svg';
+import { Link as ReactLink } from 'react-router-dom';
 
 export const Container = styled.div`
     display: flex;
     width: 100vw;
     height: 100vh;
-`
+`;
 
 export const LeftContainer = styled.div`
     background: url('${BackgroundLogin}');
@@ -25,7 +25,7 @@ export const LeftContainer = styled.div`
     img{
         width: 80%;
     }
-`
+`;
 
 export const RightContainer = styled.div`
     display: flex;
@@ -38,10 +38,10 @@ export const RightContainer = styled.div`
     max-width: 50%;
 
     background: url('${Background}');
-    background-color: #1e1e1e;
+    background-color: ${({ theme }) => theme.mainBlack};
 
     p{
-        color: #fff;
+        color: ${({ theme }) => theme.white};
         font-size: 18px;
         font-weight: 800;
 
@@ -49,16 +49,14 @@ export const RightContainer = styled.div`
             text-decoration: underline;
         }
     }
-`
+`;
 
 export const Title = styled.h1`
-    font-family: "Road Rage", sans-serif;
+    font-family: ${({ theme }) => theme.roadRageFont};
     font-weight: 400;
     font-size: 40px;
-    color: #fff;
-    color: #9758a6;
-
-`
+    color: ${({ theme }) => theme.purple};
+`;
 
 export const Form = styled.form`
     display: flex;
@@ -67,7 +65,7 @@ export const Form = styled.form`
     padding: 20px;
     width: 100%;
     max-width: 400px;
-`
+`;
 
 export const InputContainer = styled.div`
     display: flex;
@@ -86,20 +84,19 @@ export const InputContainer = styled.div`
     label{
         font-size: 18px;
         font-weight: 600;
-        color: #fff;
+        color: ${({ theme }) => theme.white};
     }
 
     p{
         font-size: 14px;
         line-height: 80%;
-        color: #cf3057;
+        color: ${({ theme }) => theme.darkRed};
         font-weight: 600;
         height: 10px;
     }
-`
+`;
 
 export const Link = styled(ReactLink)`
     text-decoration: none;
-    color: #fff;
-`
-
+    color: ${({ theme }) => theme.white};
+`;

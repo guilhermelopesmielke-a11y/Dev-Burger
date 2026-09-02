@@ -1,15 +1,15 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const ContainerButton = styled.button`
-    background-color: #9758a6;
+    background-color: ${({ theme }) => theme.purple};
     width: 100%;
     height: 52px;
     border: 0;
     border-radius: 5px;
     font-size: 30px;
-    color: #fff;
+    color: ${({ theme }) => theme.white};
 
     &:hover {
-        background-color: #6f357c;
+        background-color: ${({ theme }) => theme.secondDarkPurple};
     }
-`
+`;
