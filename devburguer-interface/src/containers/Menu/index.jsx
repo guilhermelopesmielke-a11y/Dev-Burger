@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import {api} from "../../services/api.js";
 import { formatedPrice } from "../../utils/formatPrice.js";
 import { CardProduct } from "../../components/CardProduct";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 
 export function Menu(){
@@ -12,18 +12,11 @@ export function Menu(){
     const [categories, setCategories] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([])
     
-    const navigate = useNavigate();
-    
-    const {search} = useLocation()
-    const queryParams = new URLSearchParams(search)
-    const [activeCategory, setActiveCategory] = useState((()=>{
-        const categoryId = +queryParams.get('categoria')
-
-        if (categoryId){
-            return categoryId
-        }
-        return 0
-    }));
+    // Derivado da URL, e nao guardado em estado local: assim o filtro acompanha
+    // o link clicado, o botao voltar/avancar do navegador e um F5 na pagina.
+    // 'Todas' e a categoria 0, que e o fallback quando nao ha parametro.
+    const [searchParams] = useSearchParams()
+    const activeCategory = Number(searchParams.get('categoria')) || 0
 
     useEffect(() => {
         async function loadProducts() {
@@ -74,31 +67,13 @@ export function Menu(){
                 </h1>
             </Banner>
             <CategoryMenu>
-                <BackButton
-                    onClick = {() => {
-                        navigate(
-                            {
-                                pathname:'/home'
-                            }
-                        )
-                    }}
-                >Voltar</BackButton>
+                <BackButton to="/home">Voltar</BackButton>
                 {categories.map((category) => (
-                    <CategoryButton 
-                    key={category.id} 
-                    $isActiveCategory={category.id === activeCategory}
-                    onClick = {() => {
-                        navigate(
-                            {
-                                pathname: '/cardapio',
-                                search: `?categoria=${category.id}`
-                            },
-                            {
-                                replace:true,
-                            }
-                        )
-                        setActiveCategory(category.id)
-                    }}>
+                    <CategoryButton
+                    key={category.id}
+                    to={`/cardapio?categoria=${category.id}`}
+                    replace
+                    $isActiveCategory={category.id === activeCategory}>
                         {category.name}
                     </CategoryButton>
                 ))}

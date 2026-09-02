@@ -55,7 +55,10 @@ export function Login() {
                         // Espera 2s só para o usuário conseguir ler o aviso de sucesso
                         // antes de a tela mudar.
                         setTimeout(() => {
-                            navigate("/home")
+                            if(userData?.admin)
+                                navigate("/admin/pedidos")
+                            else
+                                navigate("/home")
                         }, 2000)
                         return "Login realizado com sucesso!"
                     }

@@ -1,45 +1,37 @@
-import { createBrowserRouter } from "react-router-dom";
-import { Home, Menu, Cart, Login, Register, Checkout, CompletePayment } from "../containers";
-import { Header, Footer } from "../components";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { Home, Menu, Cart, Login, Register, Checkout, CompletePayment, Admin } from "../containers";
+import { UserLayout } from "../layouts/UserLayout";
+import { AdminLayout } from "../layouts/AdminLayout";
+import { Products } from "../containers/Admin/Products";
+import { EditProduct } from "../containers/Admin/EditProduct";
+import { NewProduct } from "../containers/Admin/NewProduct";
+import { Orders } from "../containers/Admin/Orders";
 
-export const router = createBrowserRouter([
-    {
-        path: "/login",
-        element: <Login />
-    },
-    {
-        path: "/cadastro",
-        element: <Register />
-    },
-    {
-        path: "/home",
-        element: (
-        <>
-            <Header/>
-            <Home />
-            <Footer></Footer>
-        </>    
-        )
-    },
-    {
-        path: "/cardapio",
-        element:(
-        <>
-            <Header/>
-            <Menu />
-        </>    
-        )
-    },
-    {
-        path:'/carrinho',
-        element:<Cart/>
-    },
-    {
-        path:'/checkout',
-        element:<Checkout/>
-    },
-    {
-        path:'/complete',
-        element:<CompletePayment/>
-    },
-])
+export function Router() {
+    return (
+        <Routes>
+
+            <Route path="/" element={<UserLayout />}>
+                {/* Sem isto, abrir a raiz do site renderiza o layout com o
+                    Outlet vazio: header e footer, e nada no meio. */}
+                <Route index element={<Navigate to="/home" replace />} />
+                <Route path="/home" element={<Home />} />
+                <Route path="/cardapio" element={<Menu />} />
+                <Route path="/carrinho" element={<Cart />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/complete" element={<CompletePayment />} />
+            </Route>
+
+            <Route path="/admin" element={<AdminLayout />}>
+                <Route path="/admin/pedidos" element={<Orders />} />
+                <Route path="/admin/novo-produto" element={<NewProduct />} />
+                <Route path="/admin/editar-produto" element={<EditProduct />} />
+                <Route path="/admin/produto" element={<Products />} />
+            </Route>
+
+            <Route path="/login" element={<Login />} />
+            <Route path="/cadastro" element={<Register />} />
+
+        </Routes>
+    )
+}

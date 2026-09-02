@@ -3,7 +3,6 @@ import { api } from "../../services/api";
 import CarouselPkg from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { CategoryButton, Container, ContainerItems, Feedback, Title } from "./styles";
-import { useLocation, useNavigate, useNavigation } from "react-router-dom";
 
 // O pacote é CommonJS e seu entry faz `module.exports = require('./lib')`.
 // O Vite não consegue enxergar o `__esModule` estaticamente, então o import
@@ -67,9 +66,6 @@ export function CategoryCarousel() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const navigate = useNavigate();
-
-    
     useEffect(() => {
         async function loadCategories() {
             try {
@@ -113,16 +109,9 @@ console.log(categories)
                 >
                     {categories.map((category) => (
                         <ContainerItems key={category.id} $imageUrl={category.url}>
-                            <CategoryButton
-                                onClick={() => {
-                                    navigate(
-                                        {
-                                            pathname:`/cardapio`,
-                                            search:`?categoria=${category.id}`
-                                        }
-                                    )
-                                }}
-                            >{category.name}</CategoryButton>
+                            <CategoryButton to={`/cardapio?categoria=${category.id}`}>
+                                {category.name}
+                            </CategoryButton>
                         </ContainerItems>
                     ))}
                 </Carousel>
