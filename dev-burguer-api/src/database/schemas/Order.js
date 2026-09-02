@@ -41,6 +41,14 @@ const OrderSchema = new mongoose.Schema({
     status:{
         type: String,
         required: true,
+    },
+    // Chave de idempotencia do webhook: o Stripe reenvia eventos, e um Pix
+    // dispara dois eventos para a mesma sessao. 'sparse' porque pedidos antigos,
+    // feitos antes do Stripe, nao tem esse campo e nao podem colidir no indice.
+    stripeSessionId:{
+        type: String,
+        unique: true,
+        sparse: true,
     }
 }, {
     timestamps: true,

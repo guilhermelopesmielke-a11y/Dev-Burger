@@ -51,9 +51,19 @@ class CreateCheckoutSession {
                 ui_mode: "elements",
                 mode: "payment",
                 line_items: lineItems,
-                return_url: `${process.env.FRONTEND_URL}/sucesso?session_id={CHECKOUT_SESSION_ID}`,
+                return_url: `${process.env.FRONTEND_URL}/complete?session_id={CHECKOUT_SESSION_ID}`,
+                // O padrao do Pix e 4h. Pedido de comida confirmado 4h depois nao
+                // serve para ninguem, entao encurtamos para 1h.
+                payment_method_options: {
+                    pix: { expires_after_seconds: 3600 },
+                },
                 metadata: {
                     user_id: String(req.userId),
+                    user_name: String(req.userName),
+                    // O webhook remonta o pedido a partir daqui, entao guardamos
+                    // [id, quantidade] no formato mais curto possivel: metadata do
+                    // Stripe aceita no maximo 500 caracteres por valor.
+                    products: JSON.stringify(products.map(p => [p.id, p.quantity])),
                 },
             });
 

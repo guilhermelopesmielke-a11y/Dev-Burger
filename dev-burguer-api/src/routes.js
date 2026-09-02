@@ -9,6 +9,7 @@ import CategoryController from "./app/controllers/CategoryController.js";
 import adminMiddleware from "./app/middlewares/admin.js";
 import OrderController from "./app/controllers/OrderController.js";
 import CreateCheckoutSession from "./app/controllers/stripe/CreateCheckoutSession.js";
+import SessionStatus from "./app/controllers/stripe/SessionStatus.js";
 
 const routes = new Router();
 
@@ -31,5 +32,6 @@ routes.post("/orders", OrderController.store);
 routes.put("/orders/:id", adminMiddleware, OrderController.update);
 
 routes.post("/create-checkout-session", CreateCheckoutSession.store);
+routes.get("/session-status", SessionStatus.show);
 
 export default routes;

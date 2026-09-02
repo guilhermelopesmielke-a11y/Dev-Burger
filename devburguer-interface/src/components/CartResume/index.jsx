@@ -46,7 +46,6 @@ export function CartResume() {
                 draggable: true,
                 progress: undefined,
                 theme: "light",
-                transition: Bounce,
             });
         }
 
