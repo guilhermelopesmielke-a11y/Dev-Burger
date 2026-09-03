@@ -10,6 +10,8 @@ import { formatedPrice } from '../../../utils/formatPrice';
 import { orderStatusOptions } from './orderStatus';
 import {
   ExpandButton,
+  OrderDate,
+  OrderId,
   ProductImage,
   ProductItem,
   ProductsList,
@@ -70,9 +72,13 @@ export function Row({ order, setOrders }) {
             {open ? <CaretUp size={20} /> : <CaretDown size={20} />}
           </ExpandButton>
         </Table.Td>
-        <Table.Td>{order._id}</Table.Td>
+        <Table.Td>
+          <OrderId title={order._id}>#{order._id.slice(-6)}</OrderId>
+        </Table.Td>
         <Table.Td>{order.user.name}</Table.Td>
-        <Table.Td>{formatDate(order.createdAt)}</Table.Td>
+        <Table.Td>
+          <OrderDate>{formatDate(order.createdAt)}</OrderDate>
+        </Table.Td>
         <Table.Td>
           <Select
             value={order.status}

@@ -121,3 +121,18 @@ export const Select = styled.select`
     cursor: progress;
   }
 `;
+
+// O _id do Mongo tem 24 caracteres e estourava a largura da tabela, empurrando
+// a coluna de status para fora da tela. Mostramos so o final — que ja identifica
+// o pedido no dia a dia — e deixamos o id inteiro no title, para copiar quando
+// for preciso procurar direto no banco.
+export const OrderId = styled.span`
+  font-family: monospace;
+  font-size: 15px;
+  white-space: nowrap;
+  cursor: help;
+`;
+
+export const OrderDate = styled.span`
+  white-space: nowrap;
+`;
