@@ -1,7 +1,5 @@
-import Product from "../../models/Product.js";
-import Category from "../../models/Category.js";
-import Order from "../../../database/schemas/Order.js";
 import stripe from "../../../config/stripe.js";
+import { createOrderFromSession } from "../../services/createOrderFromSession.js";
 
 /*
   Por que o webhook e obrigatorio a partir do Pix:
@@ -16,60 +14,15 @@ import stripe from "../../../config/stripe.js";
   - checkout.session.completed .............. cartao, ja chega com payment_status 'paid'
   - checkout.session.async_payment_succeeded  Pix, chega quando o cliente efetivamente paga
   - checkout.session.async_payment_failed ... Pix expirou ou falhou
+
+  Em desenvolvimento este webhook so chega se o `stripe listen` estiver rodando
+  (o Stripe nao alcanca o localhost). Por isso o /session-status tambem cria o
+  pedido — ver createOrderFromSession.
 */
 const PAID_EVENTS = [
     "checkout.session.completed",
     "checkout.session.async_payment_succeeded",
 ];
-
-async function createOrderFromSession(session) {
-    // Idempotencia: o Stripe reenvia eventos que falham, e um Pix dispara dois
-    // eventos diferentes para a mesma sessao. Sem isso o pedido duplicaria.
-    const alreadyCreated = await Order.findOne({ stripeSessionId: session.id });
-
-    if (alreadyCreated) {
-        return;
-    }
-
-    const { user_id, user_name, products } = session.metadata;
-
-    // Guardado como [[id, quantidade], ...] no CreateCheckoutSession.
-    const orderedProducts = JSON.parse(products);
-
-    const findedProducts = await Product.findAll({
-        where: {
-            id: orderedProducts.map(([id]) => id),
-        },
-        include: {
-            model: Category,
-            as: "category",
-            attributes: ["name"],
-        },
-    });
-
-    const mapedProducts = findedProducts.map(product => {
-        const [, quantity] = orderedProducts.find(([id]) => id === product.id);
-
-        return {
-            id: product.id,
-            name: product.name,
-            price: product.price,
-            url: product.url,
-            category: product.category.name,
-            quantity,
-        };
-    });
-
-    await Order.create({
-        user: {
-            id: user_id,
-            name: user_name,
-        },
-        products: mapedProducts,
-        status: "Pedido realizado",
-        stripeSessionId: session.id,
-    });
-}
 
 class StripeWebhook {
     async handle(req, res) {

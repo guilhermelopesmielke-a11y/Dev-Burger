@@ -6,16 +6,11 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
-
-// mesma unidade de product.price (centavos). Valor provisorio ate confirmar no Figma
-const DELIVERY_TAX = 500
-
 export function CartResume() {
 
     const [finalPrice, setfinalPrice] = useState(0)
-    const [deliveryTax] = useState(500)
     const navigate = useNavigate()
-    const { cartProducts, clearCart } = useCart()
+    const { cartProducts } = useCart()
 
     useEffect(() => {
         const subtotal = cartProducts.reduce((acc, product) => {
@@ -25,16 +20,20 @@ export function CartResume() {
         setfinalPrice(subtotal)
     }, [cartProducts])
 
+    // O pedido NAO nasce aqui. Aqui so abrimos a sessao de pagamento: quem grava
+    // o pedido e o back-end, depois de confirmar com o Stripe que o dinheiro
+    // entrou (webhook + /session-status). Criar o pedido no front deixaria Pix
+    // pago sem pedido — e pedido registrado sem pagamento.
     const submitOrder = async () => {
         const products = cartProducts.map((product) => {
             return { id: product.id, quantity: product.quantity, price: product.price }
         })
 
         try {
-            const {data} = await api.post('/create-checkout-session', { products })
+            const { data } = await api.post('/create-checkout-session', { products })
 
-            navigate('/checkout',{
-                state:data,
+            navigate('/checkout', {
+                state: data,
             })
         } catch (error) {
             toast.error('Erro, tente novamente', {
@@ -48,32 +47,9 @@ export function CartResume() {
                 theme: "light",
             });
         }
-
-        // try {
-        //     const { status } = await api.post("/orders", { products },
-        //         {
-        //             validateStatus: () => true,
-        //         }
-        //     )
-        //     if (status === 201 || status === 200) {
-        //         toast.success("Pedido realizado com sucesso!")
-        //         setTimeout(() => {
-        //             navigate("/home")
-        //             clearCart()
-        //         }, 2000)
-        //     } else if (status === 409) {
-        //         toast.error("Falha ao realizar pedido!")
-        //     } else {
-        //         throw new Error()
-        //     }
-
-        //     console.log(status);
-        // } catch {
-        //     toast.error("Falha no sistema! Tente novamente")
-        // }
     }
 
-    const total = finalPrice + deliveryTax
+    const total = finalPrice
 
     return (
         <Container>
@@ -83,10 +59,6 @@ export function CartResume() {
                     <Row>
                         <p>Itens</p>
                         <span>{formatedPrice(finalPrice)}</span>
-                    </Row>
-                    <Row>
-                        <p>Taxa de entrega</p>
-                        <span>{formatedPrice(deliveryTax)}</span>
                     </Row>
                     <TotalRow>
                         <p>Total</p>

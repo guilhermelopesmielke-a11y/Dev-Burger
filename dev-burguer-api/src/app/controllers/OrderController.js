@@ -85,7 +85,12 @@ class OrderController {
     }
 
     async index(_req, res) {
-        const orders = await Order.find();
+        // Mais recente primeiro: quem abre a tela de pedidos quer ver o que
+        // acabou de entrar, nao o pedido da semana passada. O _id entra como
+        // desempate porque dois pedidos podem cair no mesmo milissegundo — sem
+        // ele a ordem entre eles ficaria a criterio do Mongo e poderia mudar a
+        // cada recarregamento da pagina.
+        const orders = await Order.find().sort({ createdAt: -1, _id: -1 });
         return res.status(200).json(orders);
     }
 }
