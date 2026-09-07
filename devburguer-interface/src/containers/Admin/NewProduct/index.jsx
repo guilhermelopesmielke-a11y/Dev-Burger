@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import { toast } from 'react-toastify';
 
 import { yupResolver } from "@hookform/resolvers/yup"
 import { UploadSimpleIcon } from '@phosphor-icons/react';
 import * as yup from "yup"
 import {api} from '../../../services/api'
+import { formatedPrice } from '../../../utils/formatPrice'
 
 import {
   Container,
@@ -21,7 +22,7 @@ const schema = yup
     name: yup.string().required('Digite o nome do produto'),
     price: yup
       .number()
-      .positive()
+      .positive('O preço deve ser maior que zero')
       .typeError('Digite o preço do produto')
       .required('Digite o preço do produto'),
     category: yup.string().required('Selecione uma categoria'),
@@ -47,6 +48,7 @@ export function NewProduct() {
   }, [])
 
   const {
+    control,
     register,
     handleSubmit,
     formState: { errors },
@@ -78,7 +80,26 @@ export function NewProduct() {
 
         <InputGroup>
           <label htmlFor="price">Preço</label>
-          <input id="price" type="number" {...register('price')} />
+          {/* O valor guardado no formulario ja e o inteiro em centavos que o
+              banco espera (16 reais -> 1600). A mascara cuida so da exibicao:
+              a cada tecla sobram apenas os digitos, e o formatedPrice mostra
+              esse total de centavos como moeda. */}
+          <Controller
+            name="price"
+            control={control}
+            render={({ field }) => (
+              <input
+                id="price"
+                type="text"
+                inputMode="numeric"
+                placeholder="R$ 0,00"
+                value={field.value ? formatedPrice(field.value) : ''}
+                onChange={(event) =>
+                  field.onChange(Number(event.target.value.replace(/\D/g, '')))
+                }
+              />
+            )}
+          />
           <ErrorMessage>{errors.price?.message}</ErrorMessage>
         </InputGroup>
 
