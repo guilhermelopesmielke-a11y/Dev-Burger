@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useForm } from "react-hook-form"
+import { toast } from 'react-toastify';
 
 import { yupResolver } from "@hookform/resolvers/yup"
 import { UploadSimpleIcon } from '@phosphor-icons/react';
@@ -17,10 +18,20 @@ import {
 
 const schema = yup
   .object({
-    Name: yup.string().required(),
-    price: yup.number().positive().required(),
+    name: yup.string().required('Digite o nome do produto'),
+    price: yup
+      .number()
+      .positive()
+      .typeError('Digite o preço do produto')
+      .required('Digite o preço do produto'),
     category: yup.string().required('Selecione uma categoria'),
-    file: yup.mixed(),
+    file: yup.mixed().test('required', 'Escolha um arquivo para continuar', value =>{
+      return value && value.length > 0
+    }).test('fileSize', 'Carregue arquivos até 5MB', value => {
+      return value && value[0]?.size <= 5 * 1024 * 1024
+    }).test('fileType', 'Carregue arquivos PNG ou JPEG', value => {
+      return value && ['image/jpeg', 'image/png'].includes(value[0]?.type)
+    })
   })
 
 export function NewProduct() {
@@ -42,7 +53,19 @@ export function NewProduct() {
   } = useForm({
     resolver: yupResolver(schema),
   })
-  const onSubmit = (data) => console.log(data)
+  const onSubmit = async (data) => {
+    const productFormData = new FormData()
+    productFormData.append('name', data.name)
+    productFormData.append('price', data.price)
+    productFormData.append('category_id', data.category)
+    productFormData.append('file', data.file[0])
+
+    await toast.promise(api.post('/products', productFormData), {
+      pending: 'Adicionando o produto...',
+      success: 'Produto adicionado com sucesso',
+      error: 'Falha ao adicionar o produto',
+    })
+  }
 
   return (
     <Container>

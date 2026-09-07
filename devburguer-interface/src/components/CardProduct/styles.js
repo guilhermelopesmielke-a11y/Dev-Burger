@@ -37,9 +37,15 @@ export const Container = styled.div`
     }
 `;
 
+// A imagem vem do upload do admin, entao pode ser um PNG recortado (fundo
+// transparente) ou um JPEG (retangulo opaco). A moldura quadrada com
+// object-fit da o mesmo enquadramento aos dois: sem ela a largura segue a
+// proporcao do arquivo e cada formato aparece de um tamanho.
 export const CardImage = styled.img`
+    width: 100px;
     height: 100px;
+    object-fit: cover;
+    border-radius: 10px;
     position: absolute;
     top: -50px;
-
 `;

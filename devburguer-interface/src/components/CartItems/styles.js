@@ -1,9 +1,12 @@
 import styled from 'styled-components';
 
+// Mesmo motivo do CardImage: sem object-fit um JPEG fora do quadrado entra
+// esticado nos 80x80.
 export const ProductImage = styled.img`
     height: 80px;
     width: 80px;
     border-radius: 16px;
+    object-fit: cover;
 `;
 
 export const ButtonGroup = styled.div`
