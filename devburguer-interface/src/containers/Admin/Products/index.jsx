@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-
+import {useNavigate} from 'react-router-dom';
 import {
   CheckSquareIcon,
   MagnifyingGlassIcon,
@@ -22,6 +22,7 @@ import {
 export function Products() {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function loadProducts() {
@@ -37,6 +38,10 @@ export function Products() {
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(search.toLowerCase()),
   );
+
+  function editProduct(product) {
+    navigate(`/admin/editar-produto`, {state: { product }});
+  }
 
   return (
     <Container>
@@ -79,7 +84,7 @@ export function Products() {
                   <ProductImage src={product.url} alt={product.name} />
                 </Table.Td>
                 <Table.Td>
-                  <EditButton type="button">
+                  <EditButton type="button" onClick={() => editProduct(product)}>
                     <PencilSimpleIcon />
                   </EditButton>
                 </Table.Td>
