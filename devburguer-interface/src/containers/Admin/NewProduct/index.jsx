@@ -51,6 +51,7 @@ export function NewProduct() {
     control,
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -62,11 +63,21 @@ export function NewProduct() {
     productFormData.append('category_id', data.category)
     productFormData.append('file', data.file[0])
 
-    await toast.promise(api.post('/products', productFormData), {
-      pending: 'Adicionando o produto...',
-      success: 'Produto adicionado com sucesso',
-      error: 'Falha ao adicionar o produto',
-    })
+    try {
+      await toast.promise(api.post('/products', productFormData), {
+        pending: 'Adicionando o produto...',
+        success: 'Produto adicionado com sucesso',
+        error: 'Falha ao adicionar o produto',
+      })
+
+      // So limpa depois que a API confirmou: se der erro o admin continua com
+      // tudo preenchido e so precisa tentar de novo. O reset zera os campos do
+      // formulario; o nome do arquivo mora num estado a parte e volta na mao.
+      reset()
+      setFileName(null)
+    } catch {
+      // O toast acima ja mostrou a falha para o usuario.
+    }
   }
 
   return (
