@@ -13,7 +13,9 @@ import {
   ErrorMessage,
   Form,
   InputGroup,
+  Label,
   LabelUpload,
+  OfferGroup,
   SubmitButton,
 } from './styles';
 
@@ -57,6 +59,16 @@ export function EditProduct() {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
+    // Os valores iniciais tem que entrar por aqui, e nao num defaultValue de
+    // cada input: preco e categoria sao campos controlados (Controller), e um
+    // input controlado ignora o defaultValue do React. O preco ja vem em
+    // centavos da API, que e exatamente o que a mascara espera.
+    defaultValues: {
+      name: product.name,
+      price: product.price,
+      category: String(product.category_id),
+      offers: product.offers,
+    },
   })
   const onSubmit = async (data) => {
     const productFormData = new FormData()
@@ -87,7 +99,7 @@ export function EditProduct() {
       <Form onSubmit={handleSubmit(onSubmit)}>
         <InputGroup>
           <label htmlFor="name">Nome</label>
-          <input id="name" type="text" {...register('name')} defaultValue={product.name} />
+          <input id="name" type="text" {...register('name')} />
           <ErrorMessage>{errors.name?.message}</ErrorMessage>
         </InputGroup>
 
@@ -102,7 +114,6 @@ export function EditProduct() {
             control={control}
             render={({ field }) => (
               <input
-                defaultValue={product.price/100}
                 id="price"
                 type="text"
                 inputMode="numeric"
@@ -136,18 +147,35 @@ export function EditProduct() {
 
         <InputGroup>
           <label htmlFor="category">Categoria</label>
-          <select id="category" defaultValue="" {...register('category')}>
-            <option value="" disabled>
-              Selecione uma categoria
-            </option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
+          {/* Controlado de proposito: as categorias chegam da API depois que o
+              select ja montou, e um select nao controlado perderia a categoria
+              do produto porque a option ainda nao existia na montagem. */}
+          <Controller
+            name="category"
+            control={control}
+            defaultValue={product.category}
+            render={({ field }) => (
+              <select id="category" {...field}>
+                <option value="" disabled>
+                  Selecione uma categoria
+                </option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            )}
+          />
           <ErrorMessage>{errors.category?.message}</ErrorMessage>
         </InputGroup>
+
+        {/* Fora do InputGroup de proposito: ali todo input ganha 52px de
+            altura e fundo branco, o que deformaria o checkbox. */}
+        <OfferGroup>
+          <input id="offers" type="checkbox" {...register('offers')} />
+          <Label htmlFor="offers">Produto em oferta</Label>
+        </OfferGroup>
 
         <SubmitButton type="submit">Adicionar produto</SubmitButton>
       </Form>

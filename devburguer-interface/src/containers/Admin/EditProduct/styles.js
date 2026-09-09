@@ -110,3 +110,25 @@ export const SubmitButton = styled(Button)`
   font-weight: 600;
   line-height: 109%;
 `;
+
+// A linha de oferta foge do empilhamento dos outros campos: e um checkbox com
+// o rotulo ao lado, entao ela nao usa o InputGroup.
+export const OfferGroup = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  input[type='checkbox'] {
+    width: 20px;
+    height: 20px;
+    accent-color: ${({ theme }) => theme.purple};
+    cursor: pointer;
+  }
+`;
+
+export const Label = styled.label`
+  color: ${({ theme }) => theme.white};
+  font-size: 18px;
+  line-height: 109%;
+  cursor: pointer;
+`;
