@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { yupResolver } from "@hookform/resolvers/yup"
 import { UploadSimpleIcon } from '@phosphor-icons/react';
 import * as yup from "yup"
-import {api} from '../../../services/api'
+import { api } from '../../../services/api'
 import { formatedPrice } from '../../../utils/formatPrice'
 
 import {
@@ -16,6 +16,7 @@ import {
   LabelUpload,
   SubmitButton,
 } from './styles';
+import { Label, OfferGroup } from '../EditProduct/styles';
 
 const schema = yup
   .object({
@@ -26,7 +27,8 @@ const schema = yup
       .typeError('Digite o preço do produto')
       .required('Digite o preço do produto'),
     category: yup.string().required('Selecione uma categoria'),
-    file: yup.mixed().test('required', 'Escolha um arquivo para continuar', value =>{
+    offer: yup.boolean(),
+    file: yup.mixed().test('required', 'Escolha um arquivo para continuar', value => {
       return value && value.length > 0
     }).test('fileSize', 'Carregue arquivos até 5MB', value => {
       return value && value[0]?.size <= 5 * 1024 * 1024
@@ -38,10 +40,10 @@ const schema = yup
 export function NewProduct() {
   const [fileName, setFileName] = useState(null)
   const [categories, setCategories] = useState([])
-  
+
   useEffect(() => {
     async function loadCategories() {
-      const {data} = await api.get('/categories')
+      const { data } = await api.get('/categories')
       setCategories(data)
     }
     loadCategories()
@@ -62,6 +64,7 @@ export function NewProduct() {
     productFormData.append('price', data.price)
     productFormData.append('category_id', data.category)
     productFormData.append('file', data.file[0])
+    productFormData.append('offers', data.offer)
 
     try {
       await toast.promise(api.post('/products', productFormData), {
@@ -145,6 +148,11 @@ export function NewProduct() {
           </select>
           <ErrorMessage>{errors.category?.message}</ErrorMessage>
         </InputGroup>
+
+        <OfferGroup>
+          <input id="offers" type="checkbox" {...register('offers')} />
+          <Label htmlFor="offers">Produto em oferta</Label>
+        </OfferGroup>
 
         <SubmitButton type="submit">Adicionar produto</SubmitButton>
       </Form>

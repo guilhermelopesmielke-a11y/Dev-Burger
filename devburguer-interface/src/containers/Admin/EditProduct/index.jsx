@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from "react-hook-form"
 import { toast } from 'react-toastify';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { yupResolver } from "@hookform/resolvers/yup"
 import { UploadSimpleIcon } from '@phosphor-icons/react';
 import * as yup from "yup"
@@ -28,13 +28,7 @@ const schema = yup
       .typeError('Digite o preço do produto')
       .required('Digite o preço do produto'),
     category: yup.string().required('Selecione uma categoria'),
-    file: yup.mixed().test('required', 'Escolha um arquivo para continuar', value =>{
-      return value && value.length > 0
-    }).test('fileSize', 'Carregue arquivos até 5MB', value => {
-      return value && value[0]?.size <= 5 * 1024 * 1024
-    }).test('fileType', 'Carregue arquivos PNG ou JPEG', value => {
-      return value && ['image/jpeg', 'image/png'].includes(value[0]?.type)
-    })
+    offers: yup.boolean(),
   })
 
 export function EditProduct() {
@@ -42,6 +36,7 @@ export function EditProduct() {
   const [categories, setCategories] = useState([])
 
   const {state: {product}} = useLocation()
+  const navigate = useNavigate()
   
   useEffect(() => {
     async function loadCategories() {
@@ -55,7 +50,6 @@ export function EditProduct() {
     control,
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -75,20 +69,24 @@ export function EditProduct() {
     productFormData.append('name', data.name)
     productFormData.append('price', data.price)
     productFormData.append('category_id', data.category)
-    productFormData.append('file', data.file[0])
+    productFormData.append('offers', data.offers)
+
+    // Na edicao a imagem e opcional: so entra no envio se o admin escolheu uma
+    // nova, senao a API mantem a que ja estava salva.
+    if (data.file?.length) {
+      productFormData.append('file', data.file[0])
+    }
 
     try {
-      await toast.promise(api.post('/products', productFormData), {
-        pending: 'Adicionando o produto...',
-        success: 'Produto adicionado com sucesso',
-        error: 'Falha ao adicionar o produto',
+      await toast.promise(api.put(`/products/${product.id}`, productFormData), {
+        pending: 'Atualizando o produto...',
+        success: 'Produto atualizado com sucesso',
+        error: 'Falha ao atualizar o produto',
       })
 
-      // So limpa depois que a API confirmou: se der erro o admin continua com
-      // tudo preenchido e so precisa tentar de novo. O reset zera os campos do
-      // formulario; o nome do arquivo mora num estado a parte e volta na mao.
-      reset()
-      setFileName(null)
+      // Volta para a listagem so depois que a API confirmar: se der erro o
+      // admin continua nesta tela, com tudo preenchido, para tentar de novo.
+      navigate('/admin/produtos')
     } catch {
       // O toast acima ja mostrou a falha para o usuario.
     }
@@ -177,7 +175,7 @@ export function EditProduct() {
           <Label htmlFor="offers">Produto em oferta</Label>
         </OfferGroup>
 
-        <SubmitButton type="submit">Adicionar produto</SubmitButton>
+        <SubmitButton type="submit">Editar produto</SubmitButton>
       </Form>
     </Container>
   );
