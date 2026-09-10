@@ -167,9 +167,7 @@ export function EditProduct() {
           />
           <ErrorMessage>{errors.category?.message}</ErrorMessage>
         </InputGroup>
-
-        {/* Fora do InputGroup de proposito: ali todo input ganha 52px de
-            altura e fundo branco, o que deformaria o checkbox. */}
+        
         <OfferGroup>
           <input id="offers" type="checkbox" {...register('offers')} />
           <Label htmlFor="offers">Produto em oferta</Label>
