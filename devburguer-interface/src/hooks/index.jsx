@@ -1,5 +1,6 @@
 import {UserProvider} from './UserContext'
 import {CartProvider} from './CartContext'
+import {CartAnimationProvider} from './CartAnimationContext'
 
 /*
   PASSO 2 DO FLUXO — o "agregador de Providers".
@@ -13,7 +14,9 @@ const AppProvider = ({children}) =>{
     // Repassar {children} para dentro é o que mantém o app inteiro sendo renderizado.
     return(
         <UserProvider>
-            <CartProvider>{children}</CartProvider>
+            <CartProvider>
+                <CartAnimationProvider>{children}</CartAnimationProvider>
+            </CartProvider>
         </UserProvider>
     )
 }

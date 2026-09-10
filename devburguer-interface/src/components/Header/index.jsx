@@ -6,17 +6,21 @@ import {
     LinkContainer,
     HeaderLink,
     Logout,
+    CartTarget,
+    CartPulse,
 } from './styles'
 import { useNavigate, useResolvedPath } from 'react-router-dom'
 import {UserCircle, ShoppingCart, ShoppingCartIcon} from "@phosphor-icons/react"
 import { useUser } from '../../hooks/UserContext'
 import { useTheme } from 'styled-components'
+import { useCartAnimation } from '../../hooks/CartAnimationContext'
 
 export function Header() {
     const navigate = useNavigate()
     const {pathname} = useResolvedPath()
     const {logout, userInfo} = useUser()
     const theme = useTheme()
+    const {registerCartTarget, cartPulseKey} = useCartAnimation()
 
     function logoutUser() {
         logout()
@@ -45,7 +49,13 @@ export function Header() {
                 </Profile>
             </Options>
             <LinkContainer>
-                <ShoppingCart color={theme.white} size={24}></ShoppingCart>
+                <CartTarget ref={registerCartTarget}>
+                    {/* A `key` remonta o icone a cada chegada: e o jeito mais
+                        direto de rebobinar uma animacao CSS que ja rodou. */}
+                    <CartPulse key={cartPulseKey} $isActive={cartPulseKey > 0}>
+                        <ShoppingCart color={theme.white} size={24}></ShoppingCart>
+                    </CartPulse>
+                </CartTarget>
                 <HeaderLink to='/carrinho'>Carrinho</HeaderLink>
             </LinkContainer>
         </Container>

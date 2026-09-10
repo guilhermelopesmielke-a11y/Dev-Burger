@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
 
 export const Container = styled.div`
@@ -66,6 +66,43 @@ export const Profile = styled.div`
                 color: ${({ theme }) => theme.orange};
             }
         }
+    }
+`;
+
+// O tranco de chegada: o carrinho "recebe" o produto crescendo e balancando,
+// que e o que fecha o ciclo iniciado no clique do card.
+const cartBump = keyframes`
+    0% {
+        transform: scale(1) rotate(0deg);
+    }
+    30% {
+        transform: scale(1.4) rotate(-12deg);
+    }
+    55% {
+        transform: scale(0.9) rotate(7deg);
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
+`;
+
+// Alvo do voo: existe so para dar um no estavel ao `getBoundingClientRect`,
+// enquanto o filho remonta a cada chegada para reiniciar a animacao.
+export const CartTarget = styled.span`
+    display: inline-flex;
+`;
+
+export const CartPulse = styled.span`
+    display: inline-flex;
+
+    ${({ $isActive }) =>
+        $isActive &&
+        css`
+            animation: ${cartBump} 550ms cubic-bezier(0.34, 1.56, 0.64, 1);
+        `}
+
+    @media (prefers-reduced-motion: reduce) {
+        animation: none;
     }
 `;
 
