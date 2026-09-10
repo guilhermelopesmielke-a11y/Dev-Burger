@@ -1,24 +1,42 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+# Segredos
+.env
+.env.*
+!.env.example
 
-node_modules
-dist
-dist-ssr
+# Dependencias e build
+node_modules/
+dist/
+dist-ssr/
 *.local
 
-# Editor directories and files
+# Cache
+.vite/
+.eslintcache
+coverage/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Editores
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# Ferramentas de IA
+.claude/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini

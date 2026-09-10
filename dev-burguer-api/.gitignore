@@ -1,1 +1,37 @@
-node_modules
+# Segredos
+.env
+.env.*
+!.env.example
+
+# Dependencias e build
+node_modules/
+dist/
+
+# Dumps e backups de banco
+*.sql
+*.dump
+*.archive
+*.sqlite
+*.sqlite3
+!migrations/*.sql
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editores
+.vscode/*
+.idea/
+*.sw?
+
+# Ferramentas de IA
+.claude/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini

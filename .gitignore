@@ -1,27 +1,95 @@
-# Projeto de terceiros (seed do curso) - fora deste repositorio
+# ============================================================
+# .gitignore raiz - vale para todo o monorepo (API + interface)
+# ============================================================
+
+# ---------- SEGREDOS (nunca versionar) ----------
+.env
+.env.*
+**/.env
+**/.env.*
+# excecao: o modelo sem valores reais deve continuar versionado
+!.env.example
+!**/.env.example
+
+# Certificados e chaves
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+
+# ---------- Dumps e backups de banco ----------
+*.sql
+*.dump
+*.archive
+*.sqlite
+*.sqlite3
+*.db
+# excecao: migrations em SQL, se existirem, devem ser versionadas
+!**/migrations/*.sql
+
+# ---------- Projeto de terceiros (seed do curso) ----------
 seed-devburger-api/
 
-# Backups do historico git antigo das subpastas (ficam so na maquina local)
+# ---------- Backups do historico git antigo das subpastas ----------
 .git-old/
 **/.git-old/
 
-# Dependencias - reinstalaveis com `pnpm install`
+# ---------- Dependencias (reinstalaveis com `pnpm install`) ----------
 node_modules/
 **/node_modules/
+.pnp
+.pnp.js
 
-# Build gerado
+# ---------- Build gerado ----------
 dist/
 dist-ssr/
+build/
 **/dist/
+**/build/
+*.local
 
-# Logs
+# ---------- Cache de ferramentas ----------
+.vite/
+**/.vite/
+.cache/
+.parcel-cache/
+.turbo/
+.eslintcache
+*.tsbuildinfo
+
+# ---------- Testes / cobertura ----------
+coverage/
+**/coverage/
+.nyc_output/
+
+# ---------- Logs ----------
+logs/
 *.log
 npm-debug.log*
 pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+lerna-debug.log*
 
-# Sistema operacional
+# ---------- Editores e IDEs ----------
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ---------- Ferramentas de IA / assistentes ----------
+.claude/
+**/.claude/
+.cursor/
+.aider*
+
+# ---------- Sistema operacional ----------
 .DS_Store
 Thumbs.db
 desktop.ini
+ehthumbs.db
