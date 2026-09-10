@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Texture from '../../assets/Texture.svg';
+import Texture from '../../assets/texture.svg';
 import Background from '../../assets/background.svg';
 
 export const Container = styled.div`
