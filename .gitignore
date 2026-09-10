@@ -35,6 +35,9 @@ docker-compose.override.yml
 *.db
 # excecao: migrations em SQL, se existirem, devem ser versionadas
 !**/migrations/*.sql
+# excecao: catalogo inicial, sem dado de usuario - o backup.sql completo
+# continua ignorado porque carrega hash de senha de conta real
+!dev-burguer-api/seed.sql
 
 # ---------- Projeto de terceiros (seed do curso) ----------
 seed-devburger-api/

@@ -10,7 +10,6 @@ class UserController {
             name: Yup.string().required(),
             email: Yup.string().email().required(),
             password: Yup.string().required().min(6),
-            admin: Yup.boolean(),
         });
 
         try {
@@ -19,7 +18,7 @@ class UserController {
             return res.status(400).json({ error: err.errors });
         }
 
-        const {name, email, password, admin} = req.body;
+        const {name, email, password} = req.body;
 
         const userExists = await User.findOne({ where: { email } });
 
@@ -34,7 +33,11 @@ class UserController {
             name,
             email,
             password_hash,
-            admin,
+            // Cadastro publico NUNCA define admin. Antes o valor vinha do corpo da
+            // requisicao, entao bastava mandar {"admin": true} para virar
+            // administrador e ganhar acesso a criacao e exclusao de produtos.
+            // Promover alguem a admin e uma acao manual, feita direto no banco.
+            admin: false,
         });
 
         return res.status(201).json({

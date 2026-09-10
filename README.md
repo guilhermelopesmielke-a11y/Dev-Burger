@@ -87,7 +87,25 @@ para corrigir depois que as URLs existirem.
 O plano free hiberna apos 15 minutos sem trafego — a primeira requisicao
 seguinte leva cerca de 50 segundos para responder.
 
-### 3. Interface na Vercel
+### 3. Catalogo e conta de admin
+
+As migrations criam as tabelas vazias. Para a vitrine nao nascer sem produtos,
+abra o SQL Editor do Neon e rode o [`seed.sql`](./dev-burguer-api/seed.sql) — sao
+as 4 categorias e os 38 produtos, apontando para as imagens que ja estao
+versionadas em `dev-burguer-api/uploads/`.
+
+O seed nao traz usuarios de proposito: hash de senha de conta real nao entra em
+repositorio publico. Cadastre-se pelo proprio site e promova a conta a admin no
+SQL Editor:
+
+```sql
+UPDATE public.users SET admin = true WHERE email = 'seu@email.com';
+```
+
+O cadastro publico sempre cria a conta como nao-admin, entao essa promocao
+manual e a unica forma de liberar a area administrativa.
+
+### 4. Interface na Vercel
 
 `Add New > Project`, escolha este repositorio e defina **Root Directory** como
 `devburguer-interface`. O build (`pnpm build` / `dist`) e detectado sozinho e o
@@ -97,7 +115,7 @@ Router. Adicione as variaveis:
 - `VITE_API_URL` = URL da API no Render
 - `VITE_STRIPE_PUBLIC_KEY` = chave publicavel do Stripe
 
-### 4. Fechando o circuito
+### 5. Fechando o circuito
 
 Com as duas URLs em maos, volte no Render e ajuste `APP_URL` (URL da API) e
 `FRONTEND_URL` (URL da Vercel). Depois, no painel do Stripe, crie um webhook

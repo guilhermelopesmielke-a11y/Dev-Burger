@@ -14,6 +14,9 @@ dist/
 *.sqlite
 *.sqlite3
 !migrations/*.sql
+# excecao: catalogo inicial, sem dado de usuario. O backup.sql completo
+# continua ignorado porque carrega hash de senha de conta real
+!seed.sql
 
 # Logs
 logs/
