@@ -3,9 +3,13 @@ import axios from "axios";
 
 // Instância única do axios usada por todo o app.
 // baseURL: o endereço do back-end. Assim nas telas basta escrever api.post("/session")
-// em vez de repetir "http://localhost:3000" em cada chamada.
+// em vez de repetir o endereço da API em cada chamada.
+//
+// O endereço vem de VITE_API_URL porque ele muda entre a máquina de
+// desenvolvimento e o servidor de produção. O fallback mantém o `pnpm dev`
+// funcionando sem precisar criar um .env local.
 export const api = axios.create({
-    baseURL: "http://localhost:3000"
+    baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000"
 })
 
 /*

@@ -8,7 +8,10 @@ class Category extends Model{
              url:{
                 type: Sequelize.VIRTUAL,
                 get() {
-                    return `http://localhost:3000/category-file/${this.path}`;
+                    // Mesma regra do Product: o host da API vem do ambiente.
+                    const baseUrl = process.env.APP_URL || "http://localhost:3000";
+
+                    return `${baseUrl}/category-file/${this.path}`;
                 }
             }
         },
@@ -21,5 +24,3 @@ class Category extends Model{
 }
 
 export default Category;
-
-

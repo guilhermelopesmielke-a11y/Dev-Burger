@@ -9,20 +9,21 @@ Projeto full stack de uma hamburgueria, composto por dois aplicativos:
 
 ## Pre-requisitos
 
-- Node.js 18+
+- Node.js 22+
 - pnpm
 - PostgreSQL (dados relacionais: usuarios, produtos, categorias)
 - MongoDB (pedidos)
 - Conta no Stripe (checkout)
 
-## Como rodar
+## Como rodar localmente
 
 ### 1. API
 
 ```bash
 cd dev-burguer-api
+cp .env.example .env   # preencha as variaveis
 pnpm install
-pnpm sequelize db:migrate
+pnpm migrate
 pnpm dev
 ```
 
@@ -36,17 +37,77 @@ pnpm install
 pnpm dev
 ```
 
-Sobe em `http://localhost:5173`. A URL da API fica em `src/services/api.js`.
+Sobe em `http://localhost:5173`. Para apontar para outra API, crie um `.env` a
+partir do `.env.example` e defina `VITE_API_URL`.
 
 ## Variaveis de ambiente
 
-A API le suas variaveis de `dev-burguer-api/.env`, que **esta versionado neste repositorio** por se tratar de um repo privado. O arquivo `.env.example` fica como referencia do que cada variavel significa.
+Nenhum segredo fica no codigo: a API le tudo de `dev-burguer-api/.env`, que
+**nao e versionado**. O `.env.example` documenta cada variavel.
 
 | Variavel | Descricao |
 |---|---|
+| `PORT` | Porta do servidor. Em producao a plataforma define sozinha |
+| `APP_URL` | Endereco publico da propria API, usado para montar a URL das imagens |
+| `DATABASE_URL` | String de conexao do Postgres. Substitui as `DB_*` e liga o SSL |
+| `DB_HOST` / `DB_PORT` / `DB_USER` / `DB_PASSWORD` / `DB_NAME` | Postgres local, quando nao ha `DATABASE_URL` |
+| `DB_SSL` | Forca ligar/desligar SSL no Postgres |
+| `MONGO_URL` | Conexao do MongoDB (pedidos) |
+| `JWT_SECRET` / `JWT_EXPIRES_IN` | Assinatura e validade dos tokens |
 | `STRIPE_SECRET_KEY` | Chave secreta do Stripe |
-| `FRONTEND_URL` | URL do front, para onde o Stripe redireciona apos o pagamento |
+| `STRIPE_WEBHOOK_SECRET` | Segredo que valida a assinatura do webhook |
+| `FRONTEND_URL` | URL do front. Define o redirect do Stripe e a lista do CORS |
 
-As credenciais do PostgreSQL ficam em `src/config/database.cjs` e o segredo do JWT em `src/config/auth.js`.
+A interface usa `VITE_API_URL` e `VITE_STRIPE_PUBLIC_KEY`. Por serem lidas pelo
+navegador, ambas sao publicas por natureza — nunca coloque segredo em `VITE_*`.
 
-> **Atencao:** este repositorio contem credenciais reais (chave do Stripe, segredo do JWT, senha do banco). Mantenha-o **privado**. Se um dia for torna-lo publico, rotacione as chaves antes.
+## Deploy
+
+| Peca | Servico | Plano |
+|---|---|---|
+| Interface | Vercel | free |
+| API | Render (Web Service) | free |
+| PostgreSQL | Neon | free |
+| MongoDB | MongoDB Atlas | free (M0) |
+
+### 1. Bancos
+
+No **Neon**, crie um projeto e copie a connection string (`postgresql://...`).
+No **MongoDB Atlas**, crie um cluster M0, um usuario de banco, libere o acesso
+de qualquer IP (`0.0.0.0/0`, porque o IP do Render muda) e copie a URI
+`mongodb+srv://...`, acrescentando `/devburguer` antes da `?`.
+
+### 2. API no Render
+
+`New > Blueprint` e aponte para este repositorio. O [`render.yaml`](./render.yaml)
+ja traz build, start, health check e a lista de variaveis; o Render so pergunta
+os valores. Deixe `APP_URL` e `FRONTEND_URL` com um valor provisorio e volte
+para corrigir depois que as URLs existirem.
+
+O plano free hiberna apos 15 minutos sem trafego — a primeira requisicao
+seguinte leva cerca de 50 segundos para responder.
+
+### 3. Interface na Vercel
+
+`Add New > Project`, escolha este repositorio e defina **Root Directory** como
+`devburguer-interface`. O build (`pnpm build` / `dist`) e detectado sozinho e o
+[`vercel.json`](./devburguer-interface/vercel.json) cuida do roteamento do React
+Router. Adicione as variaveis:
+
+- `VITE_API_URL` = URL da API no Render
+- `VITE_STRIPE_PUBLIC_KEY` = chave publicavel do Stripe
+
+### 4. Fechando o circuito
+
+Com as duas URLs em maos, volte no Render e ajuste `APP_URL` (URL da API) e
+`FRONTEND_URL` (URL da Vercel). Depois, no painel do Stripe, crie um webhook
+apontando para `https://sua-api.onrender.com/stripe/webhook` com o evento
+`checkout.session.completed` e copie o `whsec_...` para `STRIPE_WEBHOOK_SECRET`.
+
+### Limitacao conhecida
+
+O disco do Render free e efemero. As imagens em `dev-burguer-api/uploads/` estao
+versionadas e sobrevivem ao deploy, mas toda imagem enviada pela area
+administrativa depois disso se perde no proximo restart. Para resolver de vez, o
+`multer` precisa gravar em um storage externo (Cloudinary, Supabase Storage, S3)
+em vez do disco local.

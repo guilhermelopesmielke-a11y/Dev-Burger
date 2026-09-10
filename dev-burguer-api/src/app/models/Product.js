@@ -11,7 +11,12 @@ class Product extends Model{
             url:{
                 type: Sequelize.VIRTUAL,
                 get(){
-                    return `http://localhost:3000/product-file/${this.path}`;
+                    // APP_URL e o endereco publico desta propria API. Fixar o
+                    // localhost aqui faria o front em producao pedir a imagem
+                    // para a maquina de quem esta navegando.
+                    const baseUrl = process.env.APP_URL || "http://localhost:3000";
+
+                    return `${baseUrl}/product-file/${this.path}`;
                 }
             }
         },
@@ -29,5 +34,3 @@ class Product extends Model{
 }
 
 export default Product;
-
-

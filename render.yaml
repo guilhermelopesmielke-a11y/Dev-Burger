@@ -1,0 +1,41 @@
+# Blueprint do Render: descreve a API para nao precisar preencher build,
+# start e variaveis na mao. No painel: New > Blueprint > escolher este repo.
+#
+# O front NAO entra aqui - ele vai para a Vercel, que le o vercel.json de
+# devburguer-interface/.
+services:
+  - type: web
+    name: dev-burguer-api
+    runtime: node
+    plan: free
+    # Free tem Oregon, Ohio, Virginia, Frankfurt e Singapore. Trocar por ohio
+    # ou virginia deixa a latencia menor para quem acessa do Brasil.
+    region: oregon
+    # O repositorio e um monorepo: sem isso o Render tentaria buildar a raiz.
+    rootDir: dev-burguer-api
+    # --prod=false garante o sequelize-cli (devDependency) na hora do migrate.
+    buildCommand: pnpm install --prod=false && pnpm migrate
+    startCommand: pnpm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      # sync: false = o Render pergunta o valor na criacao, e ele nunca fica
+      # escrito neste arquivo (que e publico).
+      - key: DATABASE_URL
+        sync: false
+      - key: MONGO_URL
+        sync: false
+      - key: APP_URL
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      # O proprio Render sorteia um segredo forte e guarda - nao precisa gerar.
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
