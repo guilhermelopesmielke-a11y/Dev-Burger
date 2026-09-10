@@ -28,6 +28,11 @@ yarn-error.log*
 .idea/
 *.sw?
 
+# Infra local com credenciais reais
+docker-compose.yml
+docker-compose.override.yml
+!docker-compose.example.yml
+
 # Ferramentas de IA
 .claude/
 

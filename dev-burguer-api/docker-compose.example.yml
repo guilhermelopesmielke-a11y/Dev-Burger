@@ -1,0 +1,36 @@
+# Modelo de infra local. Copie para docker-compose.yml (que fica fora do
+# controle de versao) e suba os dois bancos do projeto:
+#
+#   cp docker-compose.example.yml docker-compose.yml
+#   docker compose up -d
+#
+# As credenciais vem do .env, entao nenhum valor real aparece neste arquivo.
+#
+# Versoes fixadas de proposito: com ':latest' outra maquina poderia baixar
+# uma major diferente e quebrar a restauracao de um dump.
+services:
+  postgres:
+    image: postgres:18
+    container_name: devburger-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql
+
+  mongo:
+    image: mongo:8
+    container_name: devburguer-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  postgres-data:
+  mongo-data:
